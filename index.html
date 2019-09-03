@@ -76,6 +76,16 @@
             height: 500px;
 
         }
+
+        .ol span {
+            width: 50px;
+            height: 30px;
+            background: #cccccc;
+            margin: 0 15px;
+            display: inline-block;
+            line-height: 30px;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -100,10 +110,12 @@
                 <li>
                     <img src="images/timg5.jpg" id="" alt="">
                 </li>
+
+
             </ul>
         </div>
         <span class="num"> 数量加载中....</span>
-        <span class="itext"> 文字加载中....</span>
+        <div class="ol"> </div>
     </div>
 
 
@@ -111,23 +123,48 @@
         var Carousel = document.querySelector("#Carousel")
 
         var _lis = Carousel.querySelectorAll("li");  // li 加动画
-        var xsum = 0;
         var arrs = Carousel.querySelectorAll("img"); //图片
         var _Oul = Carousel.querySelector("ul");   //ul宽度
         var prev = document.querySelector(".prev");    //左箭头
         var next = document.querySelector(".next");   //右箭头
         var num = document.querySelector(".num");     //条数
-        var itext = document.querySelector(".itext");  //文字介绍
+        var iOl = document.querySelector(".ol");  //点击切换
+        var xsum = 0;
 
 
+        function animation() {
+            xsum++
+            if (xsum === arrs.length) {
+                xsum = 0;
+            }
+            _Oul.style.transform = "translate3d(" + -Carousel.offsetWidth * xsum + "px,0,0)";
+            _Oul.style.transition = 'all 1s ease 0s';
+        }
 
-        var arrs2 = [
-            '海边1',
-            '海边2',
-            '海边3',
-            '海边4',
-            '海边5',
-        ]
+        //根据图片完善结构
+        for (let i = 0; i < _lis.length; i++) {
+            let ol_li = document.createElement("span");
+            ol_li.setAttribute("index", i);
+            ol_li.innerHTML = i + 1;
+            iOl.appendChild(ol_li);
+
+
+            //鼠标进入
+            let olLst = iOl.querySelectorAll("span")
+            olLst[i].onclick = function () {
+                _index = this.getAttribute("index");
+                xsum = _index;
+
+                if (xsum === arrs.length) {
+                    xsum = 0;
+                }
+                _Oul.style.transform = "translate3d(" + -Carousel.offsetWidth * xsum + "px,0,0)";
+                _Oul.style.transition = 'all 1s ease 0s';
+
+               /*  num.innerHTML = parseInt(xsum)+1  + '/' + arrs.length;   //1/5 */
+            }
+        }
+        iOl.children[0].className = "current";
 
 
         Carousel.style.width = Carousel.offsetWidth + "px";
@@ -138,59 +175,36 @@
         }
 
         function init() {
-
             num.innerHTML = xsum + 1 + '/' + arrs.length;   //1/5
-            itext.innerHTML = arrs2[xsum];  //海边1
         }
         init();
 
         for (var i = 0; i < arrs.length; i++) {
 
-
-
-
             next.onclick = function () {
-                xsum++
-                if (xsum === arrs.length) {
-                    xsum = 0;
-                }
-                for (let j = 0; j < _lis.length; j++) {
-                    _lis[j].style.transform = '';
-                    _lis[j].style.transition = '';
-
-                }
-                _lis[xsum].style.transform = 'translate3d(-50%,0,0)';
-                _lis[xsum].style.transition = 'all 1s';
+                animation();
                 init();
             }
 
-            /*      prev.onclick = function () {
-                     xsum--
-     
-                     if (xsum === 0) {
-                         xsum = arrs.length;
-                     }
-                     _lis.style.transform = 'translate3d(-100%,0,0)';
-     
-                     _lis.style.transition = 'all 1s';
-     
-                     init();
-     
-                 } */
+            prev.onclick = function () {
+                if (xsum === 0) {
+                    xsum = arrs.length;
+                }
+                xsum--
+                _Oul.style.transform = "translate3d(" + -Carousel.offsetWidth * xsum + "px,0,0)";
+                _Oul.style.transition = 'all 1s ease 0s';
+                init();
+            }
         }
 
 
 
-        var att = setInterval(function () {
-            xsum++
-            if (xsum === arrs.length) {
-                xsum = 0;
-            }
-            init();
+        /*   var att = setInterval(function () {
+              animation();
+              init();
+          }, 1500) */
 
-        }, 3000)
-
-        _lis.onmouseover = function () {
+   /*      _lis.onmouseover = function () {
             clearInterval(att)
         }
         prev.onmouseover = function () {
@@ -199,6 +213,9 @@
         next.onmouseover = function () {
             clearInterval(att)
         }
+ */
+
+
 
         //setInterval( atrt );
     </script>
